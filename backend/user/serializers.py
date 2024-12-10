@@ -61,9 +61,14 @@ class LoginSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Пользователь не найден или не активен')
         return user
 
-    def update(self, instance, validated_data):
-        try:
-            update_last_login(None, instance)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        return instance
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True, style={'input_type': 'password'})
+    new_password = serializers.CharField(required=True, style={'input_type': 'password'})
+
+    class Meta:
+        model = User
+        fields = ('old_password', 'new_password', 'username')
+        extra_kwargs = {
+            'username': {'read_only': True},
+        }
