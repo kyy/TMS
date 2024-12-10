@@ -1,15 +1,7 @@
-from datetime import datetime
-
-from django.contrib.auth.models import User, update_last_login
-
+from django.contrib.auth.models import User
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
-from rest_framework.views import APIView
-
 from .serializers import RegisterSerializer, LoginSerializer
-from django.contrib.auth import authenticate, login
-from rest_framework.response import Response
-from rest_framework import status
 
 
 class RegisterAPIView(generics.CreateAPIView):
@@ -17,7 +9,13 @@ class RegisterAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
 
 
-class LoginAPIView(generics.CreateAPIView):
+class LoginAPIView(generics.UpdateAPIView):
     serializer_class = LoginSerializer
     permission_classes = (AllowAny,)
+    queryset = User.objects.all()
 
+    def get_object(self):
+        queryset = self.queryset
+        obj = queryset.get(pk=self.request.user.id)
+        self.check_object_permissions(self.request, obj)
+        return obj

@@ -40,14 +40,16 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField()
+    email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
-        fields = ('email', 'password')
+        fields = ('email', 'password', "last_login", "username")
         extra_kwargs = {
+            'username': {'read_only': True},
             'password': {'write_only': True, 'style': {'input_type': 'password'}},
-            'email': {'required': True},
+            'last_login': {'read_only': True},
+
         }
 
     def validate(self, data):
@@ -57,16 +59,11 @@ class LoginSerializer(serializers.ModelSerializer):
         user = authenticate(username=username, password=password)
         if user is None:
             raise serializers.ValidationError('Пользователь не найден или не активен')
-
-        return {'user': user}
-
-    def create(self, validated_data):
-        user = validated_data['user']
-        try:
-            update_last_login(None, user)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         return user
 
-
-
+    def update(self, instance, validated_data):
+        try:
+            update_last_login(None, instance)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        return instance
