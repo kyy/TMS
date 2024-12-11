@@ -1,8 +1,6 @@
-from django.contrib.auth.models import update_last_login
-from django.contrib.auth import authenticate, user_logged_in, login
-from rest_framework import serializers, status
+from django.contrib.auth import authenticate
+from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from rest_framework.response import Response
 from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
@@ -49,7 +47,6 @@ class LoginSerializer(serializers.ModelSerializer):
             'username': {'read_only': True},
             'password': {'write_only': True, 'style': {'input_type': 'password'}},
             'last_login': {'read_only': True},
-
         }
 
     def validate(self, data):
