@@ -1,61 +1,47 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
+from rest_framework.generics import get_object_or_404
 from rest_framework.validators import UniqueValidator
 
 User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(
-        validators=[UniqueValidator(queryset=User.objects.all())],
-        required=True,
-    )
-    password2 = serializers.CharField(
-        style={'input_type': 'password'},
-        write_only=True, required=True,
-        label='Повторить пароль',
-    )
+    email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())], required=True)
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password', 'password2')
+        fields = ('username', 'email', 'password')
         extra_kwargs = {
-            'password': {'write_only': True, 'style': {'input_type': 'password'}},
+            'password': {
+                'write_only': True,
+                'style': {'input_type': 'password'}
+            },
         }
 
-    def validate(self, cleaned_data):
-        if cleaned_data['password'] != cleaned_data['password2']:
-            raise serializers.ValidationError({"password": "Пароли не совпадают"})
-        return cleaned_data
 
-    def create(self, validated_data):
-        return User.objects.create_user(
-            validated_data['username'],
-            validated_data['email'],
-            validated_data['password']
-        )
-
-
-class LoginSerializer(serializers.ModelSerializer):
+class AuthSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
 
     class Meta:
         model = User
-        fields = ('email', 'password', "last_login", "username")
+        fields = ('email', 'password')
         extra_kwargs = {
-            'username': {'read_only': True},
-            'password': {'write_only': True, 'style': {'input_type': 'password'}},
-            'last_login': {'read_only': True},
+            'password': {
+                'write_only': True,
+                'style': {'input_type': 'password'}
+            },
         }
 
     def validate(self, data):
-        password = data['password']
-        email = data['email']
-        username = User.objects.filter(email=email).get().username
+        password = data.get('password', None)
+        email = data.get('email', None)
+        username = get_object_or_404(User.objects.all(), email=email)
         user = authenticate(username=username, password=password)
         if user is None:
-            raise serializers.ValidationError('Пользователь не найден или не активен')
+            raise serializers.ValidationError(detail='Пользователь не найден или не активен, возможно неверный пароль!',
+                                              code=404)
         return user
 
 
@@ -69,3 +55,16 @@ class ChangePasswordSerializer(serializers.Serializer):
         extra_kwargs = {
             'username': {'read_only': True},
         }
+
+    def validate(self, data):
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        user = self.context['request'].user
+
+        if old_password == new_password:
+            raise serializers.ValidationError(detail='Ваш новый пароль совпадает со старым!', code=403)
+
+        elif not user.check_password(old_password):
+            raise serializers.ValidationError(detail='Текущий пароль введен не верно', code=203)
+
+        return data
