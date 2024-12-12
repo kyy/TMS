@@ -20,11 +20,8 @@ class Task(models.Model):
     description = models.TextField(max_length=512, null=True)
     status = models.BooleanField(choices=STATUS_CHOICES, blank=False, default=True)
     priority = models.CharField(choices=PRIORITY_CHOICES, blank=False,  default=500)
-    created_at = models.DateTimeField(default=timezone.now())
+    created_at = models.DateTimeField(null=True, blank=False)
     edited_at = models.DateTimeField(blank=True, null=True)
     expires_at = models.DateTimeField(blank=True, null=True)
     visibility = models.BooleanField(blank=False, default=True)
-
-    def __str__(self) -> str:
-        return self.name
 
