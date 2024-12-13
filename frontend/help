@@ -1,0 +1,4 @@
+npm update npm -g
+npm install -g @vue/cli
+vue create django_client
+npm install axios    для организации связи front-back
