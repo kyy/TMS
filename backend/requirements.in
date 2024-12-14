@@ -1,5 +1,8 @@
 pip-tools
+tqdm
+
 psycopg[binary]
 
 djangorestframework
 django-cors-headers
+
