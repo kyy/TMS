@@ -142,3 +142,8 @@ REST_FRAMEWORK = {
 }
 
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    # match localhost with any port
+    r"^http:\/\/localhost:*([0-9]+)?$",
+    r"^https:\/\/localhost:*([0-9]+)?$",
+]
