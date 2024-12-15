@@ -126,7 +126,7 @@ export default {
         password: this.password,
         password_confirmation: this.confirmPassword
       }
-      axios.post('/api/user/auth', payload)
+      axios.post('/api/user/reg/', payload)
           .then(response => {
             localStorage.setItem('token', response.data.token)
             this.$router.push('/tasks')

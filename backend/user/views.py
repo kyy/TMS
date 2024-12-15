@@ -1,7 +1,9 @@
 from dbm import error
-
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth import authenticate, user_logged_in, login, logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.http import require_http_methods
 from psycopg import IntegrityError
 from rest_framework import generics, status, renderers
 from rest_framework.exceptions import MethodNotAllowed
@@ -10,6 +12,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .ex.permissions import IsAnon
 from .serializers import RegisterSerializer, AuthSerializer, ChangePasswordSerializer, User
+
+
+@ensure_csrf_cookie
+@require_http_methods(['GET'])
+def set_csrf_token(request):
+    return JsonResponse({'message': 'CSRF cookie set'})
 
 
 class RegisterAPIView(generics.CreateAPIView):
@@ -37,6 +45,9 @@ class AuthAPIView(generics.UpdateAPIView):
     serializer_class = AuthSerializer
     permission_classes = (IsAnon,)
     queryset = User.objects.all()
+
+    def get_object(self):
+        return self.request.user
 
     def update(self, request, *args, **kwargs):
 
