@@ -1,4 +1,6 @@
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -10,7 +12,7 @@ export default {
     async getData() {
       try {
         // fetch tasks
-        const response = await this.$http.get('http://localhost:8000/api/task/');
+        const response = await axios.get('http://localhost:8000/api/task/');
         // set the data returned as tasks
         this.tasks = response.data;
         console.log(response);

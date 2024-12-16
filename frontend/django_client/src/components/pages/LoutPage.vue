@@ -37,11 +37,6 @@ export default {
       isSubmitting: false,
     };
   },
-  created() {
-    if (localStorage.getItem('token') === "" && localStorage.getItem('token') === null) {
-      this.$router.push('/')
-    }
-  },
   methods: {
     logoutAction() {
       this.isSubmitting = true
