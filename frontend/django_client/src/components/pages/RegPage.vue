@@ -4,19 +4,19 @@
       <div class="col-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title mb-4">Register</h5>
+            <h5 class="card-title mb-4">Регистрация</h5>
             <form>
               <div class="mb-3">
                 <label
-                    htmlFor="name"
-                    class="form-label">Name
+                    htmlFor="username"
+                    class="form-label">Имя
                 </label>
                 <input
                     type="text"
                     class="form-control"
-                    id="name"
-                    name="name"
-                    v-model="name"
+                    id="username"
+                    name="username"
+                    v-model="username"
                 />
                 <div v-if="validationErrors.name" class="flex flex-col">
                   <small class="text-danger">
@@ -27,7 +27,7 @@
               <div class="mb-3">
                 <label
                     htmlFor="email"
-                    class="form-label">Email address
+                    class="form-label">Email
                 </label>
                 <input
                     type="email"
@@ -45,7 +45,7 @@
               <div class="mb-3">
                 <label
                     htmlFor="password"
-                    class="form-label">Password
+                    class="form-label">Пароль
                 </label>
                 <input
                     type="password"
@@ -60,29 +60,16 @@
                   </small>
                 </div>
               </div>
-              <div class="mb-3">
-                <label
-                    htmlFor="confirm_password"
-                    class="form-label">Confirm Password
-                </label>
-                <input
-                    type="password"
-                    class="form-control"
-                    id="confirm_password"
-                    name="confirm_password"
-                    v-model="confirmPassword"
-                />
-              </div>
               <div class="d-grid gap-2">
                 <button
                     :disabled="isSubmitting"
                     @click="registerAction()"
                     type="button"
-                    class="btn btn-primary btn-block">Register Now
+                    class="btn btn-primary btn-block">Вперед!
                 </button>
                 <p
-                    class="text-center">Have already an account
-                  <router-link to="/">Login here</router-link>
+                    class="text-center">
+                  <router-link to="/">Вход тут</router-link>
                 </p>
               </div>
             </form>
@@ -94,7 +81,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiClient from "@/axios";
 import LayoutDiv from '../LayoutDiv.vue';
 
 export default {
@@ -104,31 +91,29 @@ export default {
   },
   data() {
     return {
-      name: '',
+      username: '',
       email: '',
       password: '',
-      confirmPassword: '',
       validationErrors: {},
       isSubmitting: false,
     };
   },
-  // created() {
-  //   if (localStorage.getItem('token') !== "" && localStorage.getItem('token') != null) {
-  //     this.$router.push('/tasks')
-  //   }
-  // },
+  created() {
+    if (localStorage.getItem('csrftoken') !== "" && localStorage.getItem('csrftoken') != null) {
+      this.$router.push('/tasks')
+    }
+  },
   methods: {
     registerAction() {
       this.isSubmitting = true
       let payload = {
-        name: this.name,
+        username: this.username,
         email: this.email,
         password: this.password,
-        password_confirmation: this.confirmPassword
       }
-      axios.post('/api/user/reg/', payload)
+      apiClient.post('/api/user/reg/', payload)
           .then(response => {
-            localStorage.setItem('token', response.data.token)
+            localStorage.setItem('csrftoken', response.data['csrftoken'])
             this.$router.push('/tasks')
             return response
           })

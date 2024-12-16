@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import axios from 'axios';
+import apiClient from "@/axios";
 import LayoutDiv from '../LayoutDiv.vue';
 
 export default {
@@ -40,9 +40,9 @@ export default {
   methods: {
     logoutAction() {
       this.isSubmitting = true
-      axios.post('/api/user/lout/')
+      apiClient.post('/api/user/lout/')
           .then(response => {
-            localStorage.setItem('token', "")
+            localStorage.setItem('csrftoken', "")
             this.$router.push('/')
             return response
           })

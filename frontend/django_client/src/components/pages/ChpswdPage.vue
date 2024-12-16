@@ -4,47 +4,44 @@
       <div class="col-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title mb-4">Вход</h5>
+            <h5 class="card-title mb-4">Смена пароля</h5>
             <form>
               <p v-if="Object.keys(validationErrors).length !== 0" class='text-center '>
-                <small class='text-danger'>Incorrect email or Password</small></p>
+                <small class='text-danger'>Incorrect Password</small></p>
               <div class="mb-3">
                 <label
-                    htmlFor="email"
+                    htmlFor="old_password"
                     class="form-label">
-                  Email
+                  Старый пароль
                 </label>
                 <input
-                    v-model="email"
-                    type="email"
+                    v-model="old_password"
+                    type="password"
                     class="form-control"
-                    id="email"
-                    name="email"
+                    id="old_password"
+                    name="old_password"
                 />
               </div>
               <div class="mb-3">
                 <label
-                    htmlFor="password"
-                    class="form-label">Пароль
+                    htmlFor="new_password"
+                    class="form-label">Новый пароль
                 </label>
                 <input
-                    v-model="password"
+                    v-model="new_password"
                     type="password"
                     class="form-control"
-                    id="password"
-                    name="password"
+                    id="new_password"
+                    name="new_password"
                 />
               </div>
               <div class="d-grid gap-2">
                 <button
                     :disabled="isSubmitting"
-                    @click="loginAction()"
+                    @click="ChpswdAction()"
                     type="button"
-                    class="btn btn-primary btn-block">Войти
+                    class="btn btn-primary btn-block">Сменить
                 </button>
-                <p class="text-center">
-                  <router-link to="/reg">Регистрация</router-link>
-                </p>
               </div>
             </form>
           </div>
@@ -66,28 +63,23 @@ export default {
   },
   data() {
     return {
-      email: '',
-      password: '',
+      old_password: '',
+      new_password: '',
       validationErrors: {},
       isSubmitting: false,
     };
   },
-  created() {
-    if (localStorage.getItem('csrftoken') !== "" && localStorage.getItem('csrftoken') != null) {
-      this.$router.push('/tasks')
-    }
-  },
   methods: {
-    loginAction() {
+    ChpswdAction() {
       this.isSubmitting = true
       let payload = {
-        email: this.email,
-        password: this.password,
+        old_password: this.old_password,
+        new_password: this.new_password,
       }
-      apiClient.post('/api/user/auth/', payload)
+      apiClient.post('/api/user/chpswd/', payload)
           .then(response => {
             localStorage.setItem('csrftoken', response.data['csrftoken'])
-            this.$router.push('/tasks')
+            this.$router.push('/')
             return response
           })
           .catch(error => {
