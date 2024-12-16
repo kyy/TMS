@@ -134,7 +134,7 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # Схема для автоматической генерации API-документации
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
@@ -150,6 +150,7 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
+CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGIN = ["http://localhost:8080"]
 CORS_ALLOW_HEADERS = [
@@ -165,5 +166,8 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080"]
-CSRF_COOKIE_NAME = "XSRF-TOKEN"
+CORS_ORIGIN_WHITELIST = ["http://localhost:8080"]
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_HEADER_NAME = "X-CSRFToken"
 CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = True

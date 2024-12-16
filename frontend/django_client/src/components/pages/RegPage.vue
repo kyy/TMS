@@ -112,11 +112,11 @@ export default {
       isSubmitting: false,
     };
   },
-  created() {
-    if (localStorage.getItem('token') !== "" && localStorage.getItem('token') != null) {
-      this.$router.push('/tasks')
-    }
-  },
+  // created() {
+  //   if (localStorage.getItem('token') !== "" && localStorage.getItem('token') != null) {
+  //     this.$router.push('/tasks')
+  //   }
+  // },
   methods: {
     registerAction() {
       this.isSubmitting = true
