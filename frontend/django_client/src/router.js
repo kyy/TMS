@@ -9,7 +9,7 @@ import ChpswdPage from "@/components/pages/ChpswdPage.vue";
 const routes = [
     {
         path: '/tasks',
-        name: 'home',
+        name: 'AllTasks',
         component: AllTasks
     },
     {
@@ -33,6 +33,7 @@ const routes = [
         component: RegPage
     }
 ]
+
 
 const router = createRouter({
     history: createWebHistory(),

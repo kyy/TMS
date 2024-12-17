@@ -1,106 +1,77 @@
 <template>
   <layout-div>
-    <div class="row justify-content-md-center mt-5">
-      <div class="col-4">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title mb-4">Вход</h5>
-            <form>
-              <p v-if="Object.keys(validationErrors).length !== 0" class='text-center '>
-                <small class='text-danger'>Incorrect email or Password</small></p>
-              <div class="mb-3">
-                <label
-                    htmlFor="email"
-                    class="form-label">
-                  Email
-                </label>
-                <input
-                    v-model="email"
-                    type="email"
-                    class="form-control"
-                    id="email"
-                    name="email"
-                />
-              </div>
-              <div class="mb-3">
-                <label
-                    htmlFor="password"
-                    class="form-label">Пароль
-                </label>
-                <input
-                    v-model="password"
-                    type="password"
-                    class="form-control"
-                    id="password"
-                    name="password"
-                />
-              </div>
-              <div class="d-grid gap-2">
-                <button
-                    :disabled="isSubmitting"
-                    @click="loginAction()"
-                    type="button"
-                    class="btn btn-primary btn-block">Войти
-                </button>
-                <p class="text-center">
-                  <router-link to="/reg">Регистрация</router-link>
-                </p>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
 
+    <h1>Welcome to the home page</h1>
+  <div v-if="authStore.isAuthenticated">
+    <p>Hi there {{ authStore.user?.username }}!</p>
+    <p>You are logged in.</p>
+    <button @click="logout">Logout</button>
+  </div>
+  <div v-else>
+      <div class="login">
+    <h1>Login</h1>
+    <form @submit.prevent="auth">
+      <div>
+        <label for="email">Email:</label>
+        <input v-model="email" id="email" type="text" required
+               @input="resetError">
+      </div>
+      <div>
+        <label for="password">Password:</label>
+        <input v-model="password" id="password" type="password" required
+               @input="resetError">
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <p v-if="error" class="error">{{ error }}</p>
+  </div>
+  </div>
   </layout-div>
 </template>
 
 <script>
-import apiClient from "@/axios";
-import LayoutDiv from '../LayoutDiv.vue';
+import { useAuthStore } from '@/stores/auth'
+import LayoutDiv from "@/components/LayoutDiv.vue";
 
 export default {
   name: 'AuthPage',
   components: {
     LayoutDiv,
   },
+  setup() {
+    const authStore = useAuthStore()
+    return {
+      authStore
+    }
+  },
   data() {
     return {
-      email: '',
-      password: '',
-      validationErrors: {},
-      isSubmitting: false,
-    };
-  },
-  created() {
-    if (localStorage.getItem('csrftoken') !== "" && localStorage.getItem('csrftoken') != null) {
-      this.$router.push('/tasks')
+      email: "",
+      password: "",
+      error: ""
     }
   },
   methods: {
-    loginAction() {
-      this.isSubmitting = true
-      let payload = {
-        email: this.email,
-        password: this.password,
+    async auth(){
+      await this.authStore.auth(this.email, this.password, this.$router)
+      if (!this.authStore.isAuthenticated){
+        this.error = 'Login failed. Please check your credentials.'
       }
-      apiClient.post('/api/user/auth/', payload)
-          .then(response => {
-            localStorage.setItem('csrftoken', response.data['csrftoken'])
-            this.$router.push('/tasks')
-            return response
-          })
-          .catch(error => {
-            this.isSubmitting = false
-            if (error.response.data.errors !== undefined) {
-              this.validationErrors = error.response.data.errors
-            }
-            if (error.response.data.error !== undefined) {
-              this.validationErrors = error.response.data.error
-            }
-            return error
-          });
-    }
+    },
+        async logout() {
+      try {
+        await this.authStore.logout(this.$router)
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async mounted() {
+    await this.authStore.fetchUser()
   },
-};
+
+    resetError(){
+      this.error = ""
+    }
+  }
+}
 </script>

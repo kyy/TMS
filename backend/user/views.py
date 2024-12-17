@@ -96,13 +96,13 @@ class AuthAPIView(generics.CreateAPIView):
             update_last_login(None, user)
         except User.DoesNotExist:
             return Response(
-                data='Пользователь не обнаружен',
+                data={'error', 'Пользователь не обнаружен'},
                 status=status.HTTP_401_UNAUTHORIZED
             )
         finally:
             login(request, user)
         return Response(
-            data='Вход выполнен',
+            data={'success': 'Вход выполнен'},
             status=status.HTTP_200_OK)
 
     @extend_schema(
@@ -117,13 +117,13 @@ class AuthAPIView(generics.CreateAPIView):
     )
     def get(self, request):
         if request.user.is_authenticated:
-            return Response(data={'username': request.user.username, 'email': request.user.email}, status=status.HTTP_200_OK)
+            return Response({'username': request.user.username, 'email': request.user.email}, status=status.HTTP_200_OK)
         self.serializer_class(data=request.data).is_valid(raise_exception=True)
         return self.serializer_class(data=request.data).data
 
 
 class LogoutAPIView(generics.CreateAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     http_method_names = ["post"]
 
     @extend_schema(
@@ -139,7 +139,7 @@ class LogoutAPIView(generics.CreateAPIView):
             logout(request)
         finally:
             return Response(
-                data='Выход выполнен',
+                data={'success': 'Выход выполнен'},
                 status=status.HTTP_200_OK
             )
 
