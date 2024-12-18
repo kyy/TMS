@@ -8,7 +8,10 @@ const apiClient = axios.create({
     xsrfHeaderName: "X-CSRFToken",
 });
 
-apiClient.defaults.headers['X-CSRFToken'] = await getCSRFToken()
+
+// export async function setupCSRFToken() {
+//     apiClient.defaults.headers['X-CSRFToken'] = await getCSRFToken();
+// }
 
 
 export async function getCSRFToken() {
@@ -36,7 +39,7 @@ export async function getCSRFToken() {
     if (cookieValue === null) {
         throw 'Missing CSRF cookie.'
     }
-    console.log('+csrftoken')
+    console.log(cookieValue)
     return cookieValue;
 }
 

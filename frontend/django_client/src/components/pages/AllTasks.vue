@@ -1,5 +1,5 @@
 <script>
-import axios from "axios";
+import apiClient from "@/axios";
 
 export default {
   data() {
@@ -12,7 +12,7 @@ export default {
     async getData() {
       try {
         // fetch tasks
-        const response = await axios.get('http://localhost:8000/api/task/');
+        const response = await apiClient.get('/api/task/');
         // set the data returned as tasks
         this.tasks = response.data;
         console.log(response);

@@ -9,11 +9,18 @@ import {useAuthStore} from "@/stores/auth";
 import "bootstrap/dist/css/bootstrap.min.css"
 import "bootstrap"
 
+async function initializeApp() {
+    // Создаем приложение Vue и используем необходимые плагины
+    const app = createApp(App);
 
-createApp(App)
-    .use(createPinia())
-    .use(VueAxios, apiClient)
-    .use(router)
-    .mount('#app')
-
-useAuthStore()
+    app.use(createPinia());
+    app.use(VueAxios, apiClient);
+    app.use(router); //инициализируем роуты
+    // Moнтируем приложение
+    app.mount('#app');
+    useAuthStore()
+}
+// Функция для инициализации приложения
+initializeApp().catch(err => {
+    console.error('Failed to initialize app:', err);
+});

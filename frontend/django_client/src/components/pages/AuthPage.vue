@@ -3,7 +3,7 @@
 
     <h1>Welcome to the home page</h1>
   <div v-if="authStore.isAuthenticated">
-    <p>Hi there {{ authStore.user?.username }}!</p>
+    <p>Hi there {{ authStore.user }}!</p>
     <p>You are logged in.</p>
     <button @click="logout">Logout</button>
   </div>
@@ -53,22 +53,18 @@ export default {
   },
   methods: {
     async auth(){
-      await this.authStore.auth(this.email, this.password, this.$router)
+      await this.authStore.auth(this.email, this.password)
       if (!this.authStore.isAuthenticated){
         this.error = 'Login failed. Please check your credentials.'
       }
     },
-        async logout() {
+    async logout() {
       try {
         await this.authStore.logout(this.$router)
       } catch (error) {
         console.error(error)
       }
     },
-    async mounted() {
-    await this.authStore.fetchUser()
-  },
-
     resetError(){
       this.error = ""
     }

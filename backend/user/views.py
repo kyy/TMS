@@ -102,27 +102,11 @@ class AuthAPIView(generics.CreateAPIView):
         finally:
             login(request, user)
         return Response(
-            data={'success': 'Вход выполнен'},
+            data={'success': 'Вход выполнен', 'user': self.get_object().username},
             status=status.HTTP_200_OK)
 
-    @extend_schema(
-        summary="Проверка авторизации",
-        description="Возвращает 'email' и 'username'",
-        request=serializer_class,
-        methods=["get"],
-        responses={
-            401: OpenApiResponse(description="Не авторизованы"),
-            200: OpenApiResponse(description="Успешно авторизованы"),
-        }
-    )
-    def get(self, request):
-        if request.user.is_authenticated:
-            return Response({'username': request.user.username, 'email': request.user.email}, status=status.HTTP_200_OK)
-        self.serializer_class(data=request.data).is_valid(raise_exception=True)
-        return self.serializer_class(data=request.data).data
 
-
-class LogoutAPIView(generics.CreateAPIView):
+class LogoutAPIView(APIView):
     permission_classes = (AllowAny,)
     http_method_names = ["post"]
 
@@ -134,11 +118,9 @@ class LogoutAPIView(generics.CreateAPIView):
             200: OpenApiResponse(description="Вышли из учетной записи"),
         }
     )
-    def post(self, request, *args, **kwargs):
-        try:
-            logout(request)
-        finally:
-            return Response(
+    def post(self, request):
+        logout(request)  # Удаляет сессию
+        return Response(
                 data={'success': 'Выход выполнен'},
                 status=status.HTTP_200_OK
             )

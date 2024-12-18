@@ -11,7 +11,7 @@ export const useAuthStore = defineStore('auth', {
     },
     actions: {
 
-        async auth(email, password, router=null) {
+        async auth(email, password) {
             let response = await apiClient.post('/api/user/auth/', {
                 'email': email,
                 'password': password,
@@ -19,10 +19,9 @@ export const useAuthStore = defineStore('auth', {
 
             if (response.data.success) {
                 this.isAuthenticated = true
+                this.user = response.data['user']
                 this.saveState()
-                if (router){
-                    await router.push({name: "AllTasks"})
-                }
+
             } else {
                 this.user = null
                 this.isAuthenticated = false
@@ -50,7 +49,7 @@ export const useAuthStore = defineStore('auth', {
 
         async fetchUser() {
             try {
-                const response = await apiClient('api/user/auth/')
+                const response = await apiClient.get('api/user/auth/')
                 let data = response.data
                 if (data.status === 200) {
                     this.user = data.username

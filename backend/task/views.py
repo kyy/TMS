@@ -13,7 +13,8 @@ from .models import Task
 class TaskCRUDViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all().order_by('priority').order_by('-status')
     serializer_class = TaskSerializer
-    permission_classes = [IsAuthor, IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthor, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user, created_at=timezone.now())
