@@ -1,5 +1,6 @@
 <script>
-import apiClient from "@/axios";
+import {getCSRFToken} from "@/axios";
+import axios from "axios";
 
 export default {
   data() {
@@ -12,7 +13,13 @@ export default {
     async getData() {
       try {
         // fetch tasks
-        const response = await apiClient.get('/api/task/');
+
+        const response = await axios.get('http://localhost:8000/api/task', {
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': await getCSRFToken(),
+          }
+        });
         // set the data returned as tasks
         this.tasks = response.data;
         console.log(response);

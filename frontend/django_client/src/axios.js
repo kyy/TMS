@@ -9,9 +9,9 @@ const apiClient = axios.create({
 });
 
 
-// export async function setupCSRFToken() {
-//     apiClient.defaults.headers['X-CSRFToken'] = await getCSRFToken();
-// }
+export async function setupCSRFToken() {
+await  axios.get('http://localhost:8000/api/user/csrf/')
+}
 
 
 export async function getCSRFToken() {
@@ -20,7 +20,7 @@ export async function getCSRFToken() {
     This is necessary for CSRF protection in Django.
      */
 
-    await  axios.get('http://localhost:8000/api/user/csrf/')
+
 
     const name = 'csrftoken';
     let cookieValue = null;

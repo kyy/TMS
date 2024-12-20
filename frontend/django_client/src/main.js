@@ -3,7 +3,7 @@ import VueAxios from 'vue-axios'
 import {createApp} from "vue";
 import { createPinia } from 'pinia'
 import router from './router'
-import apiClient from "@/axios";
+import apiClient, {setupCSRFToken} from "@/axios";
 import {useAuthStore} from "@/stores/auth";
 
 import "bootstrap/dist/css/bootstrap.min.css"
@@ -11,6 +11,7 @@ import "bootstrap"
 
 async function initializeApp() {
     // Создаем приложение Vue и используем необходимые плагины
+    await setupCSRFToken()
     const app = createApp(App);
 
     app.use(createPinia());
