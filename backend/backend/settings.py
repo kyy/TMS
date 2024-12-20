@@ -156,26 +156,25 @@ SWAGGER_SETTINGS = {
    'USE_SESSION_AUTH': True
 }
 
+
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_EXPOSE_HEADERS = (
+    'Access-Control-Allow-Origin: *',
+)
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-    'Set-Cookie',
-]
-
 CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
-# CORS_ORIGIN_WHITELIST = ["http://localhost:8080"]
-CSRF_COOKIE_NAME = "csrftoken"
-CSRF_HEADER_NAME = "X-CSRFToken"
-CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SECURE = False
-
+CORS_ORIGIN_WHITELIST = ["http://localhost:8080", "http://127.0.0.1:8080"]
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+
+CSRF_HEADER_NAME = "X-CSRFToken"
+
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_DOMAIN = 'localhost'
+SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_HTTPONLY = False
