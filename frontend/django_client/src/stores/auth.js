@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import apiClient from "@/axios";
 
 export const useAuthStore = defineStore('auth', {
@@ -30,14 +30,14 @@ export const useAuthStore = defineStore('auth', {
         },
 
 
-        async logout(router=null) {
+        async logout(router = null) {
             try {
-                const response = await apiClient.post('api/user/lout/')
+                const response = await apiClient.post('/api/user/lout/')
                 if (response.data.success) {
                     this.user = null
                     this.isAuthenticated = false
                     this.saveState()
-                    if (router){
+                    if (router) {
                         await router.push({name: "AuthPage"})
                     }
                 }
@@ -49,13 +49,12 @@ export const useAuthStore = defineStore('auth', {
 
         async fetchUser() {
             try {
-                const response = await apiClient.get('api/user/auth/')
+                const response = await apiClient.get('/api/user/auth/')
                 let data = response.data
                 if (data.status === 200) {
                     this.user = data.username
                     this.isAuthenticated = true
-                }
-                else{
+                } else {
                     this.user = null
                     this.isAuthenticated = false
                 }

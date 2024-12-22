@@ -24,8 +24,6 @@ SECRET_KEY = 'django-insecure-s_r%b*)hrtilb_r_p!+sfy4keureq(s()igmk05c#mi@np#gr*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -133,9 +131,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',  # Схема для автоматической генерации API-документации
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        #"'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -153,28 +150,33 @@ SPECTACULAR_SETTINGS = {
 }
 
 SWAGGER_SETTINGS = {
-   'USE_SESSION_AUTH': True
+    'USE_SESSION_AUTH': True
 }
-
 
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_EXPOSE_HEADERS = (
     'Access-Control-Allow-Origin: *',
+    'Access-Control-Allow-Headers: *',
 )
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
-CORS_ORIGIN_WHITELIST = ["http://localhost:8080", "http://127.0.0.1:8080"]
+CORS_ALLOW_HEADERS = ('content-disposition', 'accept-encoding',
+                      'content-type', 'accept', 'origin', 'Authorization',
+                      'access-control-allow-methods', 'x-csrftoken')
+
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-CSRF_HEADER_NAME = "X-CSRFToken"
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ORIGIN_WHITELIST = ["http://localhost:8080", "http://127.0.0.1:8080"]
+CORS_ALLOWED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
 
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://127.0.0.1:8080"]
+CSRF_HEADER_NAME = 'HTTP_X_CSRFTOKEN'
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'Strict'
 CSRF_COOKIE_SECURE = False
+
 SESSION_COOKIE_DOMAIN = 'localhost'
 SESSION_COOKIE_SECURE = False
-SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'Strict'
 SESSION_COOKIE_HTTPONLY = False

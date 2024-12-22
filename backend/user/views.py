@@ -14,7 +14,7 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiRespon
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
     http_method_names = ['get']
 
     @extend_schema(
@@ -28,7 +28,7 @@ class GetCSRFToken(APIView):
 
 
 class RegisterAPIView(generics.CreateAPIView):
-    permission_classes = [AllowAny,]
+    permission_classes = [AllowAny, ]
     # renderer_classes = (renderers.JSONRenderer,)
     serializer_class = RegisterSerializer
     http_method_names = ['post']
@@ -107,7 +107,6 @@ class AuthAPIView(generics.CreateAPIView):
 
 
 class LogoutAPIView(APIView):
-    permission_classes = (AllowAny,)
     http_method_names = ["post"]
 
     @extend_schema(
@@ -121,14 +120,13 @@ class LogoutAPIView(APIView):
     def post(self, request):
         logout(request)  # Удаляет сессию
         return Response(
-                data={'success': 'Выход выполнен'},
-                status=status.HTTP_200_OK
-            )
+            data={'success': 'Выход выполнен'},
+            status=status.HTTP_200_OK
+        )
 
 
 class ChangePasswordAPIView(generics.CreateAPIView):
     serializer_class = ChangePasswordSerializer
-    permission_classes = (IsAuthenticated,)
     queryset = User.objects.all()
     model = User
     http_method_names = ['post']
@@ -142,8 +140,10 @@ class ChangePasswordAPIView(generics.CreateAPIView):
         methods=["post"],
         request=serializer_class,
         parameters=[
-            OpenApiParameter(name='old_password', description='Старый пароль', required=True, type=OpenApiTypes.PASSWORD),
-            OpenApiParameter(name='new_password', description='Новый пароль', required=True, type=OpenApiTypes.PASSWORD),
+            OpenApiParameter(name='old_password', description='Старый пароль', required=True,
+                             type=OpenApiTypes.PASSWORD),
+            OpenApiParameter(name='new_password', description='Новый пароль', required=True,
+                             type=OpenApiTypes.PASSWORD),
         ],
         responses={
             202: OpenApiResponse(response=serializer_class, description="Пароль успешно сменен"),

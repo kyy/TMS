@@ -39,9 +39,7 @@ class AuthSerializer(serializers.ModelSerializer):
         password = data.get('password', None)
         email = data.get('email', None)
         username = get_object_or_404(User.objects.all(), email=email)
-        print(username)
         user = authenticate(username=username, password=password)
-        print(user)
         if user is None:
             raise serializers.ValidationError(detail='Пользователь не найден или не активен, возможно неверный пароль!',
                                               code=404)
