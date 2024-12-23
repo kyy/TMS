@@ -30,23 +30,6 @@ export const useAuthStore = defineStore('auth', {
         },
 
 
-        async logout(router = null) {
-            try {
-                const response = await apiClient.post('/api/user/lout/')
-                if (response.data.success) {
-                    this.user = null
-                    this.isAuthenticated = false
-                    this.saveState()
-                    if (router) {
-                        await router.push({name: "AuthPage"})
-                    }
-                }
-            } catch (error) {
-                console.error('Logout failed', error)
-                throw error
-            }
-        },
-
         async fetchUser() {
             try {
                 const response = await apiClient.get('/api/user/auth/')

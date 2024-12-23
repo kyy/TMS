@@ -17,10 +17,11 @@
                     id="username"
                     name="username"
                     v-model="username"
+                    placeholder="username"
                 />
-                <div v-if="validationErrors.name" class="flex flex-col">
+                <div v-if="validationErrors.username" class="flex flex-col">
                   <small class="text-danger">
-                    {{ validationErrors?.name[0] }}
+                    {{ validationErrors?.username[0] }}
                   </small>
                 </div>
               </div>
@@ -35,6 +36,7 @@
                     id="email"
                     name="email"
                     v-model="email"
+                    placeholder="name@example.com"
                 />
                 <div v-if="validationErrors.email" class="flex flex-col">
                   <small class="text-danger">
@@ -53,6 +55,7 @@
                     id="password"
                     name="password"
                     v-model="password"
+                    placeholder="********"
                 />
                 <div v-if="validationErrors.password" class="flex flex-col">
                   <small class="text-danger">
@@ -69,7 +72,7 @@
                 </button>
                 <p
                     class="text-center">
-                  <router-link to="/">Вход тут</router-link>
+                  <router-link :to="{name: 'AuthPage'}">Вход тут</router-link>
                 </p>
               </div>
             </form>
@@ -98,29 +101,22 @@ export default {
       isSubmitting: false,
     };
   },
-  created() {
-    if (localStorage.getItem('csrftoken') !== "" && localStorage.getItem('csrftoken') != null) {
-      this.$router.push('/tasks')
-    }
-  },
   methods: {
     registerAction() {
       this.isSubmitting = true
-      let payload = {
+
+      apiClient.post('/api/user/reg/', {
         username: this.username,
         email: this.email,
         password: this.password,
-      }
-      apiClient.post('/api/user/reg/', payload)
-          .then(response => {
-            localStorage.setItem('csrftoken', response.data['csrftoken'])
-            this.$router.push('/tasks')
-            return response
-          })
+      }).then(response => {
+        this.$router.push({name: 'AuthPage'})
+        return response
+      })
           .catch(error => {
             this.isSubmitting = false
-            if (error.response.data.errors !== undefined) {
-              this.validationErrors = error.response.data.errors
+            if (error.response.data !== undefined) {
+              this.validationErrors = error.response.data
             }
             return error
           });
